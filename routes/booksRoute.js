@@ -5,11 +5,17 @@ const {getAllBooks,
     createBook,
     getBook,
     updateBook,
-    deleteBook
+    deleteBook,
+    login,
+    signup
 } = require('../controllers/booksControl')
 
 router.route('/').get(getAllBooks).post(createBook)
 
 router.route('/:id').get(getBook).patch(updateBook).delete(deleteBook)
+
+router.route('/login').post(login)
+
+router.route('/signup').post(signup)
 
 module.exports=router;

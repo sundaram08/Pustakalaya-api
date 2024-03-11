@@ -23,4 +23,12 @@ const bookSchema =  new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model('Book',bookSchema)
+const userSchema = new mongoose.Schema({
+    username: String,
+    password: String,
+});
+
+module.exports = {
+    Book: mongoose.model('Book', bookSchema),
+    User: mongoose.model('User', userSchema)
+};

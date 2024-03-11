@@ -1,4 +1,5 @@
-const Book = require('../models/bookModels')
+const {Book,User} = require('../models/bookModels')
+const jwt = require('jsonwebtoken')
 
 const getAllBooks = async  (req,res)=> {
     try{ 
@@ -72,7 +73,36 @@ const updateBook = async (req,res)=>{
     }
 }
 
+const login = async (req,res)=>{
+    const {username,password} = req.body
+    if(!username || !password){
+        throw new CustomAPIError('Please provide email and password')
+    }
+    const id = new Date().getDate()
+    const token = jwt.sign({username,id},process.env.JWT_SECRET,{expiresIn:'30d'})
+    console.log(username,password);
+    res.status(200).json({msg:'token sucessfully created',token})
+}
+
+const signup = async (req,res)=>{
+    const {username,password} = req.body
+    try{
+        if(!username || !password){
+            throw new CustomAPIError('Please provide email and password')
+        }
+        const existingUser = await User.findOne({ username });
+            if (existingUser) {
+                throw new CustomAPIError('Username already exists');
+            }
+            const user = await User.create({ username, password });
+            res.status(201).json({ success: true, message: 'User created successfully' });
+    } 
+    catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+}
+
 
 module.exports =  {
-    getAllBooks,createBook,getBook,updateBook,deleteBook
+    getAllBooks,createBook,getBook,updateBook,deleteBook,login,signup
 }
