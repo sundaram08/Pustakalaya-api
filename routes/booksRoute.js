@@ -1,5 +1,6 @@
 const express = require('express')
 const router  = express.Router()
+const authenticationMiddleware = require('../middleware/auth')
 
 const {getAllBooks,
     createBook,
@@ -10,9 +11,9 @@ const {getAllBooks,
     signup
 } = require('../controllers/booksControl')
 
-router.route('/').get(getAllBooks).post(createBook)
+router.route('/').get(getAllBooks).post(authenticationMiddleware,createBook)
 
-router.route('/:id').get(getBook).patch(updateBook).delete(deleteBook)
+router.route('/:id').get(getBook).patch(authenticationMiddleware,updateBook).delete(authenticationMiddleware,deleteBook)
 
 router.route('/login').post(login)
 
