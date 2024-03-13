@@ -2,15 +2,8 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const app = express()
+app.use(cors())
 app.use(express.json())
-const corsOptions = {
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    allowedHeaders: 'Content-Type,Authorization'
-  };
-app.use(cors(corsOptions))
 app.options('*', cors());
 require('dotenv').config()
 const PORT = 4000;
