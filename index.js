@@ -2,7 +2,13 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const app = express()
-app.use(cors())
+const corsOptions = {
+    origin: 'https://pustakalaya-client.vercel.app',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+    optionsSuccessStatus: 204, // respond with 204 No Content for preflight requests
+};
+app.use(cors(corsOptions));
 app.use(express.json())
 app.options('*', cors());
 require('dotenv').config()
