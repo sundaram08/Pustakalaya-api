@@ -15,7 +15,7 @@ const {getAllBooks,
 
 router.route('/').get(getAllBooks).post(createBook)
 
-router.route('/:id').get(getBook).patch(authenticationMiddleware,updateBook).delete(authenticationMiddleware,deleteBook)
+router.route('/:id').get(getBook).patch(updateBook).delete(deleteBook)
 
 router.route('/login').post(login)
 
