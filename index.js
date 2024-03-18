@@ -5,11 +5,17 @@ const app = express()
 const helmet = require('helmet')
 app.use(helmet())
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
-const corsOptions = {
-    origin: '*', // Allow requests from any origin
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  };
-app.use(cors(corsOptions));
+// const corsOptions = {
+//     origin: '*', // Allow requests from any origin
+//     allowedHeaders: ['Content-Type', 'Authorization'],
+//   };
+// app.use(cors(corsOptions));
+app.use(cors({
+  origin: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: '*',
+  credentials: true
+}))
 app.use(express.json())
 require('dotenv').config()
 const PORT = 4000;
