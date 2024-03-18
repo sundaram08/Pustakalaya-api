@@ -1,5 +1,7 @@
 const {Book,User} = require('../models/bookModels')
 const jwt = require('jsonwebtoken')
+require('dotenv').config();
+
 
 const getAllBooks = async  (req,res)=> {
     try{ 
