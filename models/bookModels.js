@@ -24,8 +24,12 @@ const bookSchema =  new mongoose.Schema(
 );
 
 const userSchema = new mongoose.Schema({
-    username: String,
-    password: String,
+    username:{ type: String},
+    password:{ type: String},
+    favoriteBooks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Book'
+    }]
 });
 
 module.exports = {

@@ -8,17 +8,26 @@ const {getAllBooks,
     updateBook,
     deleteBook,
     login,
-    signup
+    signup,
+    addtoFav,
+    getFavBooks,
+    removeFav
 } = require('../controllers/booksControl')
 
 
 
-router.route('/').get(getAllBooks).post(createBook)
+router.route('/').get(getAllBooks).post(authenticationMiddleware,createBook)
 
-router.route('/:id').get(getBook).patch(updateBook).delete(deleteBook)
+router.route('/:id').get(getBook).patch(authenticationMiddleware,updateBook).delete(authenticationMiddleware,deleteBook)
 
 router.route('/login').post(login)
 
 router.route('/signup').post(signup)
+
+router.route('/user/fav').post(addtoFav)
+
+router.route('/user/:user_id').get(getFavBooks)
+
+router.route('/user/fav/:user_id/:book_id').delete(removeFav)
 
 module.exports=router;

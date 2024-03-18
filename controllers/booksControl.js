@@ -1,5 +1,6 @@
 const {Book,User} = require('../models/bookModels')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const getAllBooks = async  (req,res)=> {
     try{ 
@@ -73,16 +74,34 @@ const updateBook = async (req,res)=>{
     }
 }
 
-const login = async (req,res)=>{
-    const {username,password} = req.body
-    if(!username || !password){
-        throw new CustomAPIError('Please provide email and password')
+const login = async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            throw new Error('Invalid username or password');
+        }
+
+        const isPasswordValid = (password, hashedPassword) => {
+            return password === hashedPassword;    
+        };
+
+        if (!isPasswordValid) {
+            throw new Error('Invalid username or password');
+        }
+
+        const id = user._id;
+        const token = jwt.sign({ id, username }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+        // Log the user in by sending the token in the response
+        res.status(200).json({ msg: 'Token successfully created', token, id });
+    } catch (error) {
+        // Handle any errors (e.g., invalid username/password)
+        res.status(400).json({ success: false, message: error.message });
     }
-    const id = new Date().getDate()
-    const token = jwt.sign({username,id},process.env.JWT_SECRET,{expiresIn:'30d'})
-    console.log(username,password);
-    res.status(200).json({msg:'token sucessfully created',token})
-}
+};
 
 const signup = async (req,res)=>{
     const {username,password} = req.body
@@ -102,7 +121,76 @@ const signup = async (req,res)=>{
     }
 }
 
+const addtoFav = async (req,res)=>{
+    const {userId,bookId}=req.body;
+    console.log(userId);
+    try {
+     
+        const user = await User.findById(userId);
+        
+        if (!user) {
+            throw new Error('User not found');
+        }
+        
+    
+        if (user.favoriteBooks.includes(bookId)) {
+            throw new Error('Book already in favorites');
+        }
+
+      
+        user.favoriteBooks.push(bookId);
+
+       
+        await user.save();
+
+        res.status(200).json({ success: true, message: 'Book added to favorites successfully' })
+    } catch (error) {
+        res.status(200).json({ success: false, message: error.message })
+    }
+}
+
+const getFavBooks= async (req,res)=>{
+    const  {user_id}  = req.params;
+    console.log(user_id);
+
+    try {
+        // Find the user by userId and populate the favoriteBooks array with actual book documents
+        const user = await User.findById(user_id).populate('favoriteBooks');
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        const favoriteBooks = user.favoriteBooks;
+
+        res.status(200).json(favoriteBooks);
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+}
+
+const removeFav = async (req, res) => {
+    const { user_id: userId, book_id: bookId } = req.params;
+    try {
+        const user = await User.findById(userId);
+        
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        
+        user.favoriteBooks.remove(bookId);
+      
+        await user.save();
+
+        // Send success response to the client
+        return res.status(201).json({ success: true, message: 'Book removed from the Favorites collection' });
+    } catch (error) {
+        console.error('Error removing book from Favorites:', error.message);
+        // Send error response to the client
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
 
 module.exports =  {
-    getAllBooks,createBook,getBook,updateBook,deleteBook,login,signup
+    getAllBooks,createBook,getBook,updateBook,deleteBook,login,signup,addtoFav,getFavBooks,removeFav
 }

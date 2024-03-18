@@ -6,7 +6,7 @@ const helmet = require('helmet')
 app.use(helmet())
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 const corsOptions = {
-    origin: '*', // Allow requests from any origin
+    origin: '*',
     allowedHeaders: ['Content-Type', 'Authorization'],
   };
 app.use(cors(corsOptions));
