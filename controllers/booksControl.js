@@ -85,7 +85,9 @@ const login = async (req, res) => {
             throw new Error('Invalid username or password');
         }
 
-        const isPasswordValid =  bcrypt.compare(password, user.password);
+      const isPasswordValid = (password, hashedPassword) => {
+            return password === hashedPassword;    
+    };
 
         if (!isPasswordValid) {
             throw new Error('Invalid username or password');
