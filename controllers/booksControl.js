@@ -1,6 +1,7 @@
 const {Book,User} = require('../models/bookModels')
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+require('dotenv').config();
+
 
 const getAllBooks = async  (req,res)=> {
     try{ 
@@ -84,9 +85,9 @@ const login = async (req, res) => {
             throw new Error('Invalid username or password');
         }
 
-        const isPasswordValid = (password, hashedPassword) => {
+      const isPasswordValid = (password, hashedPassword) => {
             return password === hashedPassword;    
-        };
+    };
 
         if (!isPasswordValid) {
             throw new Error('Invalid username or password');
