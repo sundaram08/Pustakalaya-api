@@ -75,16 +75,32 @@ const updateBook = async (req,res)=>{
     }
 }
 
-const login = async (req,res)=>{
-    const {username,password} = req.body
-    if(!username || !password){
-        throw new CustomAPIError('Please provide email and password')
+const login = async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            throw new Error('Invalid username or password');
+        }
+
+        const isPasswordValid =  bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            throw new Error('Invalid username or password');
+        }
+
+        const id = user._id;
+        const token = jwt.sign({ id, username }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+        // Log the user in by sending the token in the response
+        res.status(200).json({ msg: 'Token successfully created', token, id });
+    } catch (error) {
+        // Handle any errors (e.g., invalid username/password)
+        res.status(400).json({ success: false, message: error.message });
     }
-    const id = new Date().getDate()
-    const token = jwt.sign({username,id},process.env.JWT_SECRET,{expiresIn:'30d'})
-    console.log(username,password);
-    res.status(200).json({msg:'token sucessfully created',token})
-}
+};
 
 const signup = async (req,res)=>{
     const {username,password} = req.body
