@@ -22,7 +22,7 @@ const createBook =  async (req,res)=>{
             title: req.body.title,
             author: req.body.author,
             publishYear: req.body.publishYear,
-            category: req.body.category
+            category: req.body.category,
         }
         const book = await Book.create(newBook)
         return res.status(200).send(book)      
@@ -96,7 +96,7 @@ const login = async (req, res) => {
         const id = user._id;
         const token = jwt.sign({ id, username }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
-        // Log the user in by sending the token in the response
+        
         res.status(200).json({ msg: 'Token successfully created', token, id });
     } catch (error) {
         // Handle any errors (e.g., invalid username/password)
