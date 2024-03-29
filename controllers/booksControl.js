@@ -23,7 +23,10 @@ const createBook =  async (req,res)=>{
         if (!req.file || !req.file.path) {
             return res.status(400).json({ message: 'No file uploaded' });
         }
+        console.log(req.file);
+        console.log(req.file.path);
         const pdfUrl = await uploadOnCloudinary(req.file.path);
+        console.log(pdfUrl);
         const newBook = {
             title: req.body.title,
             author: req.body.author,
