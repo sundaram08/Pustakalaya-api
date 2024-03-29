@@ -1,7 +1,7 @@
 const express = require('express')
 const router  = express.Router()
 const authenticationMiddleware = require('../middleware/auth')
-
+const {upload} = require('../middleware/multer')
 const {getAllBooks,
     createBook,
     getBook,
@@ -16,7 +16,7 @@ const {getAllBooks,
 
 
 
-router.route('/').get(getAllBooks).post(authenticationMiddleware,createBook)
+router.route('/').get(getAllBooks).post(authenticationMiddleware,upload.single('pdf'),createBook)
 
 router.route('/:id').get(getBook).patch(authenticationMiddleware,updateBook).delete(authenticationMiddleware,deleteBook)
 

@@ -1,6 +1,7 @@
 const {Book,User} = require('../models/bookModels')
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
+const {uploadOnCloudinary} = require ('../utils/cloudinary')
 
 
 const getAllBooks = async  (req,res)=> {
@@ -14,15 +15,21 @@ const getAllBooks = async  (req,res)=> {
     }
  }
 const createBook =  async (req,res)=>{
-    try {
+    try { 
+        console.log('Request Body:', req.body);
         if(!req.body.title || !req.body.author || !req.body.publishYear ){
             return res.status(400).json({message:'Missing fields'});
         }
+        if (!req.file || !req.file.path) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+        const pdfUrl = await uploadOnCloudinary(req.file.path);
         const newBook = {
             title: req.body.title,
             author: req.body.author,
             publishYear: req.body.publishYear,
             category: req.body.category,
+            pdfUrl: pdfUrl 
         }
         const book = await Book.create(newBook)
         return res.status(200).send(book)      
