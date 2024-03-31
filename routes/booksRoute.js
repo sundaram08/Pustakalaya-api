@@ -18,6 +18,8 @@ const {getAllBooks,
 
 router.route('/').get(getAllBooks).post(authenticationMiddleware,upload.single('pdf'),createBook)
 
+// router.route('/').get(getAllBooks).post(authenticationMiddleware,createBook)
+
 router.route('/:id').get(getBook).patch(authenticationMiddleware,updateBook).delete(authenticationMiddleware,deleteBook)
 
 router.route('/login').post(login)
